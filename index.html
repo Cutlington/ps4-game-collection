@@ -72,39 +72,50 @@ fetch("games.json")
 .then(games => {
 
     const container = document.getElementById("games");
+    const searchBox = document.getElementById("search");
 
-    games.forEach(game => {
+    function renderGames(filter = "") {
 
-        container.innerHTML += `
-            <div class="card">
+        container.innerHTML = "";
 
-                <img src="${game.image_url_medium}" alt="">
+        games
+            .filter(game =>
+                game.name.toLowerCase().includes(filter.toLowerCase())
+            )
+            .forEach(game => {
 
-                <div class="info">
+                container.innerHTML += `
+                    <div class="card">
 
-                    <h2>${game.name}</h2>
+                        <img src="${game.image_url_medium}" alt="">
 
-                    <div class="titleid">
-                        ${game.titleId}
+                        <div class="info">
+
+                            <h2>${game.name}</h2>
+
+                            <div class="titleid">
+                                ${game.titleId}
+                            </div>
+
+                            <div>
+                                ${game.version}
+                            </div>
+
+                            <p>
+                                ${game.genres}
+                            </p>
+
+                        </div>
+
                     </div>
+                `;
+            });
+    }
 
-                    <div>
-                        ${game.version}
-                    </div>
+    renderGames();
 
-                    <p>
-                        ${game.genres}
-                    </p>
-
-                </div>
-
-            </div>
-        `;
+    searchBox.addEventListener("input", e => {
+        renderGames(e.target.value);
     });
 
 });
-
-</script>
-
-</body>
-</html>
