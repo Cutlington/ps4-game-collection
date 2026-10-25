@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>My PS4 Collection</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background:#121212;
+    color:white;
+    margin:20px;
+}
+
+#games{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
+    gap:20px;
+}
+
+.card{
+    background:#1e1e1e;
+    border-radius:10px;
+    overflow:hidden;
+}
+
+.card img{
+    width:100%;
+    display:block;
+}
+
+.info{
+    padding:10px;
+}
+
+h2{
+    margin-top:0;
+    font-size:18px;
+}
+
+.titleid{
+    color:#4da3ff;
+}
+</style>
+
+</head>
+<body>
+
+<h1>My PS4 Collection</h1>
+
+<div id="games"></div>
+
+<script>
+
+fetch("games.json")
+.then(r => r.json())
+.then(games => {
+
+    const container = document.getElementById("games");
+
+    games.forEach(game => {
+
+        container.innerHTML += `
+            <div class="card">
+
+                <img src="${game.image_url_medium}" alt="">
+
+                <div class="info">
+
+                    <h2>${game.name}</h2>
+
+                    <div class="titleid">
+                        ${game.titleId}
+                    </div>
+
+                    <div>
+                        ${game.version}
+                    </div>
+
+                    <p>
+                        ${game.genres}
+                    </p>
+
+                </div>
+
+            </div>
+        `;
+    });
+
+});
+
+</script>
+
+</body>
+</html>
