@@ -85,48 +85,50 @@ fetch("games.json")
 .then(r => r.json())
 .then(games => {
 
-const container = document.getElementById("games");
-const searchBox = document.getElementById("search");
-const gameCount = document.getElementById("gameCount");
+    const container = document.getElementById("games");
+    const searchBox = document.getElementById("search");
+    const gameCount = document.getElementById("gameCount");
+
+    // Fix 2: escape values so &, <, >, quotes display correctly
+    function esc(value) {
+        return String(value ?? "").replace(/[&<>"']/g, c => ({
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;"
+        }[c]));
+    }
 
     function renderGames(filter = "") {
 
-        container.innerHTML = "";
+        const filteredGames = games.filter(game =>
+            (game.name || "").toLowerCase().includes(filter.toLowerCase())
+        );
 
-const filteredGames = games.filter(game =>
-    game.name.toLowerCase().includes(filter.toLowerCase())
-);
+        gameCount.textContent = `${filteredGames.length} Games`;
 
-gameCount.textContent = `${filteredGames.length} Games`;
+        // Fix 1: build one string, assign to innerHTML once
+        container.innerHTML = filteredGames.map(game => `
+            <div class="card">
 
-filteredGames.forEach(game => {
+                <img loading="lazy" src="${esc(game.image_url_medium)}" alt="">
 
-                container.innerHTML += `
-                    <div class="card">
+                <div class="info">
 
-                        <img loading="lazy" src="${game.image_url_medium}" alt="">
+                    <h2>${esc(game.name)}</h2>
 
-                        <div class="info">
+                    <!-- Fix 3: only show fields that exist -->
+                    ${game.titleId ? `<div class="titleid">${esc(game.titleId)}</div>` : ""}
 
-                            <h2>${game.name}</h2>
+                    ${game.version ? `<div>${esc(game.version)}</div>` : ""}
 
-                            <div class="titleid">
-                                ${game.titleId}
-                            </div>
+                    ${game.genres ? `<p>${esc(game.genres)}</p>` : ""}
 
-                            <div>
-                                ${game.version}
-                            </div>
+                </div>
 
-                            <p>
-                                ${game.genres}
-                            </p>
-
-                        </div>
-
-                    </div>
-                `;
-            });
+            </div>
+        `).join("");
     }
 
     renderGames();
