@@ -47,6 +47,12 @@ h2{
     font-size:12px;
     margin:5px 0 0 0;
 }
+    
+#gameCount{
+    margin-bottom:15px;
+    color:#999;
+    font-size:14px;
+}    
 </style>
 
 </head>
@@ -54,6 +60,8 @@ h2{
 
 <h1>My PS4 Collection</h1>
 
+<div id="gameCount"></div>    
+    
 <input
     type="text"
     id="search"
@@ -77,18 +85,21 @@ fetch("games.json")
 .then(r => r.json())
 .then(games => {
 
-    const container = document.getElementById("games");
-    const searchBox = document.getElementById("search");
+const container = document.getElementById("games");
+const searchBox = document.getElementById("search");
+const gameCount = document.getElementById("gameCount");
 
     function renderGames(filter = "") {
 
         container.innerHTML = "";
 
-        games
-            .filter(game =>
-                game.name.toLowerCase().includes(filter.toLowerCase())
-            )
-            .forEach(game => {
+const filteredGames = games.filter(game =>
+    game.name.toLowerCase().includes(filter.toLowerCase())
+);
+
+gameCount.textContent = `${filteredGames.length} Games`;
+
+filteredGames.forEach(game => {
 
                 container.innerHTML += `
                     <div class="card">
